@@ -31,7 +31,15 @@ const taskSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: true
-    }
+    },
+    assignedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    },
+    tags: [{
+      type: String,
+      trim: true
+    }]
   },
   {
     timestamps: true
@@ -39,6 +47,7 @@ const taskSchema = new mongoose.Schema(
 );
 
 taskSchema.index({ user: 1, status: 1 });
+taskSchema.index({ dueDate: 1 });
 
 const Task = mongoose.model('Task', taskSchema);
 

@@ -12,7 +12,7 @@
     "type": "git",
     "url": "git+https://github.com/20kami20/task-manager-final.git"
   },
-  "keywords": ["task", "manager", "express", "mongodb", "jwt"],
+  "keywords": ["task", "manager", "express", "mongodb", "api"],
   "author": "20kami20 and Aidana2007",
   "license": "ISC",
   "dependencies": {

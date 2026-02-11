@@ -1,13 +1,15 @@
 import express from 'express';
-import { getProfile, updateProfile } from '../controllers/userController.js';
-import { protect } from '../middleware/authMiddleware.js';
+import { getProfile, updateProfile, getAllUsers, updateUserRole, deleteUser } from '../controllers/userController.js';
+import { protect, authorize } from '../middleware/authMiddleware.js';
+import { validateUpdateProfile } from '../middleware/validation.js';
 
 const router = express.Router();
 
-router.use(protect);
+router.get('/profile', protect, getProfile);
+router.put('/profile', protect, validateUpdateProfile, updateProfile);
 
-router.get('/profile', getProfile);
-
-router.put('/profile', updateProfile);
+router.get('/', protect, authorize('admin', 'moderator'), getAllUsers);
+router.put('/:userId/role', protect, authorize('admin'), updateUserRole);
+router.delete('/:userId', protect, authorize('admin'), deleteUser);
 
 export default router;
