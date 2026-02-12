@@ -11,7 +11,6 @@ export const getProfile = async (req, res, next) => {
         username: user.username,
         email: user.email,
         role: user.role,
-        isEmailVerified: user.isEmailVerified,
         createdAt: user.createdAt
       }
     });
@@ -65,7 +64,7 @@ export const updateUserRole = async (req, res, next) => {
     const { userId } = req.params;
     const { role } = req.body;
 
-    if (!['user', 'admin', 'moderator'].includes(role)) {
+    if (!['user', 'admin'].includes(role)) {
       return res.status(400).json({ message: 'Invalid role' });
     }
 

@@ -8,7 +8,7 @@ const router = express.Router();
 router.get('/profile', protect, getProfile);
 router.put('/profile', protect, validateUpdateProfile, updateProfile);
 
-router.get('/', protect, authorize('admin', 'moderator'), getAllUsers);
+router.get('/', protect, authorize('admin'), getAllUsers);
 router.put('/:userId/role', protect, authorize('admin'), updateUserRole);
 router.delete('/:userId', protect, authorize('admin'), deleteUser);
 

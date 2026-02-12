@@ -51,9 +51,7 @@ const Profile = () => {
             <p style={{color: '#666', marginBottom: '10px'}}>
               <strong>Role:</strong> {user?.role}
             </p>
-            <p style={{color: '#666', marginBottom: '10px'}}>
-              <strong>Email Verified:</strong> {user?.isEmailVerified ? 'Yes' : 'No'}
-            </p>
+            
             <p style={{color: '#666'}}>
               <strong>Member Since:</strong> {new Date(user?.createdAt).toLocaleDateString()}
             </p>

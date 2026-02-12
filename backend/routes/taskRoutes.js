@@ -10,7 +10,7 @@ router.post('/', protect, validateTask, createTask);
 router.get('/', protect, getTasks);
 router.get('/:id', protect, getTaskById);
 router.put('/:id', protect, updateTask);
-router.delete('/:id', protect, authorize('admin', 'moderator', 'user'), deleteTask);
-router.post('/:id/assign', protect, authorize('admin', 'moderator'), assignTask);
+router.delete('/:id', protect, authorize('admin', 'user'), deleteTask);
+router.post('/:id/assign', protect, authorize('admin'), assignTask);
 
 export default router;

@@ -27,14 +27,10 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['user', 'admin', 'moderator'],
+      enum: ['user', 'admin'],
       default: 'user'
     },
-    isEmailVerified: {
-      type: Boolean,
-      default: false
-    },
-    emailVerificationToken: String,
+    
     resetPasswordToken: String,
     resetPasswordExpires: Date
   },

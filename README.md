@@ -125,10 +125,7 @@ PORT=5000
 MONGODB_URI=your_mongodb_connection_string
 JWT_SECRET=your_secure_jwt_secret
 FRONTEND_URL=http://localhost:3000
-SMTP_HOST=smtp.sendgrid.net
-SMTP_PORT=587
-SMTP_USER=apikey
-SMTP_PASS=your_sendgrid_api_key
+<!-- SMTP configuration removed; email sending disabled by default. Add SMTP_* vars if enabling email service. -->
 ```
 
 5. Start the server:
@@ -181,10 +178,7 @@ Frontend will run on http://localhost:3000
 - Body: `{ email, password }`
 - Response: `{ success, token, user }`
 
-#### Verify Email
-- **POST** `/api/auth/verify-email`
-- Body: `{ token }`
-- Response: `{ success, message }`
+<!-- Email verification removed: no verify-email endpoint -->
 
 #### Forgot Password
 - **POST** `/api/auth/forgot-password`

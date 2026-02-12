@@ -108,14 +108,13 @@ const AdminPanel = () => {
                     <td style={{padding: '12px'}}>{user.username}</td>
                     <td style={{padding: '12px'}}>{user.email}</td>
                     <td style={{padding: '12px'}}>
-                      {isAdmin ? (
+                          {isAdmin ? (
                         <select
                           value={user.role}
                           onChange={(e) => handleRoleChange(user._id, e.target.value)}
                           style={{padding: '6px', borderRadius: '5px', border: '1px solid #ddd'}}
                         >
                           <option value="user">User</option>
-                          <option value="moderator">Moderator</option>
                           <option value="admin">Admin</option>
                         </select>
                       ) : (

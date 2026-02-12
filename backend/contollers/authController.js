@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import User from '../models/User.js';
-import { sendVerificationEmail, sendPasswordResetEmail } from '../config/emailService.js';
+import { sendPasswordResetEmail } from '../config/emailService.js';
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
@@ -11,33 +11,19 @@ export const register = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
 
-    const emailVerificationToken = crypto.randomBytes(32).toString('hex');
-
-    const user = await User.create({
-      username,
-      email,
-      password,
-      emailVerificationToken
-    });
-
-    try {
-      await sendVerificationEmail(email, username, emailVerificationToken);
-    } catch (emailError) {
-      console.error('Email sending failed:', emailError);
-    }
+    const user = await User.create({ username, email, password });
 
     const token = generateToken(user._id);
 
     res.status(201).json({
       success: true,
-      message: 'Registration successful. Please check your email to verify your account.',
+      message: 'Registration successful.',
       token,
       user: {
         id: user._id,
         username: user.username,
         email: user.email,
-        role: user.role,
-        isEmailVerified: user.isEmailVerified
+        role: user.role
       }
     });
   } catch (error) {
@@ -64,32 +50,8 @@ export const login = async (req, res, next) => {
         id: user._id,
         username: user.username,
         email: user.email,
-        role: user.role,
-        isEmailVerified: user.isEmailVerified
+        role: user.role
       }
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const verifyEmail = async (req, res, next) => {
-  try {
-    const { token } = req.body;
-
-    const user = await User.findOne({ emailVerificationToken: token });
-
-    if (!user) {
-      return res.status(400).json({ message: 'Invalid or expired verification token' });
-    }
-
-    user.isEmailVerified = true;
-    user.emailVerificationToken = undefined;
-    await user.save();
-
-    res.json({
-      success: true,
-      message: 'Email verified successfully'
     });
   } catch (error) {
     next(error);
