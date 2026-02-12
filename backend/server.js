@@ -13,8 +13,19 @@ const app = express();
 
 connectDB();
 
+// Flexible CORS: allow the FRONTEND_URL(s) if set, otherwise allow all origins
+const frontendUrls = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',').map(u => u.trim()) : [];
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: (origin, callback) => {
+    // allow requests with no origin (like mobile apps, curl, server-to-server)
+    if (!origin) return callback(null, true);
+    // if no FRONTEND_URL configured, allow all origins (useful for quick deploys)
+    if (frontendUrls.length === 0) return callback(null, true);
+    // allow if origin matches one of configured frontend URLs
+    if (frontendUrls.includes(origin)) return callback(null, true);
+    // otherwise reject
+    return callback(new Error('Not allowed by CORS'));
+  },
   credentials: true
 }));
 

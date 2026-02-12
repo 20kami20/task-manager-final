@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { authService } from '../services/api';
+import { authService, userService } from '../services/api';
 
 const AuthContext = createContext();
 
@@ -19,7 +19,21 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser && token) {
-      setUser(JSON.parse(storedUser));
+      const parsed = JSON.parse(storedUser);
+
+      // If stored user lacks `createdAt`, fetch fresh profile from the API
+      if (!parsed?.createdAt) {
+        userService
+          .getProfile()
+          .then((res) => {
+            const userData = res.data.user;
+            localStorage.setItem('user', JSON.stringify(userData));
+            setUser(userData);
+          })
+          .catch(() => setUser(parsed));
+      } else {
+        setUser(parsed);
+      }
     }
     setLoading(false);
   }, [token]);

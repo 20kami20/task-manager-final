@@ -23,7 +23,8 @@ export const register = async (req, res, next) => {
         id: user._id,
         username: user.username,
         email: user.email,
-        role: user.role
+        role: user.role,
+        createdAt: user.createdAt
       }
     });
   } catch (error) {
@@ -50,7 +51,8 @@ export const login = async (req, res, next) => {
         id: user._id,
         username: user.username,
         email: user.email,
-        role: user.role
+        role: user.role,
+        createdAt: user.createdAt
       }
     });
   } catch (error) {

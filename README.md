@@ -11,269 +11,143 @@ A complete task management application with user authentication, role-based acce
 - Role-Based Access Control (RBAC): Admin, Moderator, User
 - Task CRUD operations
 - Task filtering and sorting
-- Task assignment (Admin/Moderator only)
-- Email notifications for task assignments
-- User profile management
-- Admin panel for user and task management
-- Admin: Full access to all features, can manage users and assign tasks
-- Moderator: Can view all tasks and assign tasks
-- User: Can only manage their own tasks
-- Email verification on registration
-- Password reset emails
-- Task assignment notifications
-- Uses SendGrid/Mailgun (configured via environment variables)
+# Task Manager — Full Stack Application
+
+A task management web application with user authentication, role-based access control (user/admin), task CRUD and assignment, and a React front-end.
+
+## Quick Features
+- User registration and login (JWT)
+- Password reset (token flow; email sending disabled)
+- Role-based access (admin)
+- Task create / read / update / delete
+- Task assignment (admin)
+- User profile and admin panel
 
 ## Tech Stack
 
-### Backend
-- Node.js & Express.js
-- MongoDB with Mongoose
-- JWT for authentication
-- Bcrypt for password hashing
-- Nodemailer for email service
-- Joi for validation
+- Backend: Node.js, Express, MongoDB (Mongoose)
+- Frontend: React (Create React App), Axios
+- Auth: JWT, bcrypt
 
-### Frontend
-- React.js
-- React Router for navigation
-- Axios for API calls
-- React Toastify for notifications
-- Date-fns for date formatting
+## Repository Layout
 
-## Project Structure
+Root files and folders:
 
 ```
-task-manager/
-├── backend/
-│   ├── config/
-│   │   ├── database.js
-│   │   └── emailService.js
-│   ├── controllers/
-│   │   ├── authController.js
-│   │   ├── userController.js
-│   │   └── taskController.js
-│   ├── middleware/
-│   │   ├── authMiddleware.js
-│   │   ├── validation.js
-│   │   └── errorHandler.js
-│   ├── models/
-│   │   ├── User.js
-│   │   └── Task.js
-│   ├── routes/
-│   │   ├── authRoutes.js
-│   │   ├── userRoutes.js
-│   │   └── taskRoutes.js
-│   ├── .env.example
-│   ├── .gitignore
-│   ├── package.json
-│   └── server.js
-└── frontend/
-    ├── public/
-    │   └── index.html
-    ├── src/
-    │   ├── components/
-    │   │   ├── Navbar.js
-    │   │   ├── PrivateRoute.js
-    │   │   └── AdminRoute.js
-    │   ├── contexts/
-    │   │   └── AuthContext.js
-    │   ├── pages/
-    │   │   ├── Login.js
-    │   │   ├── Register.js
-    │   │   ├── Dashboard.js
-    │   │   ├── Profile.js
-    │   │   └── AdminPanel.js
-    │   ├── services/
-    │   │   └── api.js
-    │   ├── App.js
-    │   ├── App.css
-    │   ├── index.js
-    │   └── index.css
-    ├── .env.example
-    ├── .gitignore
-    └── package.json
+package.json          # backend project (root entry: backend/server.js)
+backend/              # Express API
+frontend/             # Create React App
+README.md
+.env (local backend env)
 ```
 
-## Setup Instructions
+Important backend folders:
 
-### Prerequisites
-- Node.js (v14 or higher)
-- MongoDB Atlas account or local MongoDB
-- SendGrid/Mailgun account for email service
+```
+backend/
+    config/             # database.js, emailService.js (email stubs)
+    controllers/        # authController.js, userController.js, taskController.js
+    middleware/         # authMiddleware.js, validation.js, errorHandler.js
+    models/             # User.js, Task.js
+    routes/             # authRoutes.js, userRoutes.js, taskRoutes.js
+    server.js
+```
 
-### Backend Setup
+Important frontend folders:
 
-1. Navigate to backend directory:
+```
+frontend/
+    public/
+    src/
+        components/       # Navbar, PrivateRoute, AdminRoute
+        contexts/         # AuthContext
+        pages/            # Dashboard, Profile, Login, Register, AdminPanel
+        services/         # api.js (axios instance)
+```
+
+## Environment variables
+
+Backend (set these for production and on Render):
+
+- `MONGODB_URI` — MongoDB connection string (required)
+- `JWT_SECRET` — strong secret for signing JWTs (required)
+- `FRONTEND_URL` — deployed frontend origin (used by CORS)
+- `PORT` — optional
+
+Frontend (CRA build-time env; set on your static host before build):
+
+- `REACT_APP_API_URL` — e.g. `https://your-backend.onrender.com/api`
+
+Security note: do not commit secrets to the repo; set them in the host provider (Render, Vercel, Netlify, etc.).
+
+## Run locally
+
+Backend (from repo root):
+
 ```bash
 cd backend
-```
-
-2. Install dependencies:
-```bash
 npm install
-```
-
-3. Create .env file:
-```bash
-cp .env.example .env
-```
-
-4. Configure environment variables in .env:
-```env
-NODE_ENV=development
-PORT=5000
-MONGODB_URI=your_mongodb_connection_string
-JWT_SECRET=your_secure_jwt_secret
-FRONTEND_URL=http://localhost:3000
-<!-- SMTP configuration removed; email sending disabled by default. Add SMTP_* vars if enabling email service. -->
-```
-
-5. Start the server:
-```bash
+# create a .env (see .env.example)
 npm run dev
 ```
 
-Backend will run on http://localhost:5000
+Frontend:
 
-### Frontend Setup
-
-1. Navigate to frontend directory:
 ```bash
 cd frontend
-```
-
-2. Install dependencies:
-```bash
 npm install
-```
-
-3. Create .env file:
-```bash
-cp .env.example .env
-```
-
-4. Configure environment variable:
-```env
-REACT_APP_API_URL=http://localhost:5000/api
-```
-
-5. Start the development server:
-```bash
+# set REACT_APP_API_URL in frontend/.env (e.g. http://localhost:5000/api)
 npm start
 ```
 
-Frontend will run on http://localhost:3000
+## Key API endpoints
 
-## API Documentation
+- `POST /api/auth/register` — register (response includes `user.createdAt`)
+- `POST /api/auth/login` — login
+- `GET /api/users/profile` — get current user profile
+- `GET /api/tasks` — list tasks (authenticated)
+- `POST /api/tasks` — create task (authenticated)
 
-### Authentication Endpoints (Public)
+Refer to the code in `backend/controllers` and `frontend/services/api.js` for full details.
 
-#### Register
-- **POST** `/api/auth/register`
-- Body: `{ username, email, password }`
-- Response: `{ success, message, token, user }`
+## Deployment notes (Render)
 
-#### Login
-- **POST** `/api/auth/login`
-- Body: `{ email, password }`
-- Response: `{ success, token, user }`
+- Backend: create a Web Service on Render, connect the repo, set build command `npm install` and start command `npm start`. Add `MONGODB_URI`, `JWT_SECRET`, and `FRONTEND_URL` in the Environment settings. Ensure `MONGODB_URI` is exactly named (typos like `MONGO_URI` will break the DB connection).
+- Frontend: create a Static Site on Render (or use Vercel/Netlify). Set Build Command to `npm install && npm run build` and Publish Directory to `build`. Add `REACT_APP_API_URL` in the Static Site Environment so it's available at build time.
 
-<!-- Email verification removed: no verify-email endpoint -->
+## Testing the app
 
-#### Forgot Password
-- **POST** `/api/auth/forgot-password`
-- Body: `{ email }`
-- Response: `{ success, message }`
+1. Register a new user, then login.
+2. Create tasks from the Dashboard.
+3. As an admin, visit the Admin Panel to manage users and assign tasks.
+4. Verify the Profile page shows `Member Since:` with a valid date.
 
-#### Reset Password
-- **POST** `/api/auth/reset-password`
-- Body: `{ token, password }`
-- Response: `{ success, message }`
+## Screenshots (placeholders)
 
-### User Endpoints (Private)
+Create a folder `screenshots/` in the repo or `frontend/public/screenshots/` and add images with the filenames below. Replace the example links with your actual screenshots.
 
-#### Get Profile
-- **GET** `/api/users/profile`
-- Headers: `Authorization: Bearer <token>`
-- Response: `{ success, user }`
+- Login / Register
+    - Screenshot: ![Login/Register](screenshots/login-register.png)
+    - Description: User can register and login; tokens stored in `localStorage`.
 
-#### Update Profile
-- **PUT** `/api/users/profile`
-- Headers: `Authorization: Bearer <token>`
-- Body: `{ username?, email? }`
-- Response: `{ success, message, user }`
+- Dashboard (tasks list)
+    - Screenshot: ![Dashboard](screenshots/dashboard.png)
+    - Description: Shows tasks, filters, sorting, and create task form.
 
-#### Get All Users (Admin/Moderator)
-- **GET** `/api/users`
-- Headers: `Authorization: Bearer <token>`
-- Response: `{ success, count, users }`
+- Create / Edit Task
+    - Screenshot: ![Create Task](screenshots/create-task.png)
+    - Description: Task creation/editing UI with due date and priority.
 
-#### Update User Role (Admin only)
-- **PUT** `/api/users/:userId/role`
-- Headers: `Authorization: Bearer <token>`
-- Body: `{ role }`
-- Response: `{ success, message, user }`
+- Profile
+    - Screenshot: ![Profile](screenshots/profile.png)
+    - Description: Account information and "Member Since" date.
 
-#### Delete User (Admin only)
-- **DELETE** `/api/users/:userId`
-- Headers: `Authorization: Bearer <token>`
-- Response: `{ success, message }`
+- Admin Panel
+    - Screenshot: ![Admin Panel](screenshots/admin-panel.png)
+    - Description: User list, role changes, and task assignment.
 
-### Task Endpoints (Private)
+Add more screenshots as needed; each image should be placed under `screenshots/` and referenced above.
 
-#### Get Task Statistics
-- **GET** `/api/tasks/stats`
-- Headers: `Authorization: Bearer <token>`
-- Response: `{ success, stats }`
+---
 
-#### Create Task
-- **POST** `/api/tasks`
-- Headers: `Authorization: Bearer <token>`
-- Body: `{ title, description?, status?, dueDate, priority?, tags? }`
-- Response: `{ success, message, task }`
-
-#### Get All Tasks
-- **GET** `/api/tasks?status=&priority=&sort=`
-- Headers: `Authorization: Bearer <token>`
-- Response: `{ success, count, tasks }`
-
-#### Get Task by ID
-- **GET** `/api/tasks/:id`
-- Headers: `Authorization: Bearer <token>`
-- Response: `{ success, task }`
-
-#### Update Task
-- **PUT** `/api/tasks/:id`
-- Headers: `Authorization: Bearer <token>`
-- Body: `{ title?, description?, status?, dueDate?, priority?, tags? }`
-- Response: `{ success, message, task }`
-
-#### Delete Task
-- **DELETE** `/api/tasks/:id`
-- Headers: `Authorization: Bearer <token>`
-- Response: `{ success, message }`
-
-#### Assign Task (Admin/Moderator)
-- **POST** `/api/tasks/:id/assign`
-- Headers: `Authorization: Bearer <token>`
-- Body: `{ userId }`
-- Response: `{ success, message, task }`
-
-## Deployment
-
-### Backend Deployment (Render/Railway)
-
-1. Create new Web Service
-2. Connect GitHub repository
-3. Set build command: `npm install`
-4. Set start command: `npm start`
-5. Add environment variables from .env
-6. Deploy
-
-### Frontend Deployment (Vercel/Netlify)
-
-1. Connect GitHub repository
-2. Set build command: `npm run build`
-3. Set publish directory: `build`
-4. Add environment variable: `REACT_APP_API_URL=<deployed-backend-url>/api`
-5. Deploy
+If you'd like, I can also add a `screenshots/` folder and commit this README update — tell me if you want me to commit and push these changes.
