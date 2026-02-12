@@ -146,8 +146,3 @@ Create a folder `screenshots/` in the repo or `frontend/public/screenshots/` and
     - Screenshot: ![Admin Panel](screenshots/admin-panel.png)
     - Description: User list, role changes, and task assignment.
 
-Add more screenshots as needed; each image should be placed under `screenshots/` and referenced above.
-
----
-
-If you'd like, I can also add a `screenshots/` folder and commit this README update — tell me if you want me to commit and push these changes.
